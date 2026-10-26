@@ -1,4 +1,4 @@
-# Module 8: Hosting a Static Website
+# Hosting a Static Website
 
 This lab shows you how to serve a simple HTML page using Nginx.
 

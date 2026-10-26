@@ -11,7 +11,7 @@ This repository is designed so learners can read through the course document [Ng
 
 ## Course Roadmap & Folder Structure
 
-The repository is organized to match the hands-on modules in [Nginx.md](Nginx.md):
+The repository is organized to match the hands-on labs in [Nginx.md](Nginx.md):
 
 ```text
 nginx-flask-lab/
@@ -19,24 +19,25 @@ nginx-flask-lab/
 ├── Nginx.md                       # Complete course theory & lesson notes
 ├── .gitignore                     # Git ignore rules for Python virtual environments & logs
 │
-├── static-website/                # Module 8: Hosting a Static Website
+├── static-website/                # Hosting a Static Website
 │   ├── index.html                 # Simple HTML landing page
 │   ├── mysite.conf                # Nginx server block for mysite.local
-│   └── README.md                  # Lab instructions for Module 8
+│   └── README.md                  # Lab instructions for static website
 │
-├── flask-reverse-proxy/           # Module 9: Nginx with a Python Flask App
+├── flask-reverse-proxy/           # Nginx with a Python Flask App
 │   ├── app.py                     # Simple 6-line Flask application
 │   ├── requirements.txt           # Python dependencies (flask, gunicorn)
 │   ├── flaskapp.conf              # Nginx reverse proxy configuration for flask.local
-│   └── README.md                  # Lab instructions for Module 9
+│   └── README.md                  # Lab instructions for Flask app
 │
-└── upstream-servers/              # Module 10: Upstream Servers (Ports 3000 & 3001)
+└── upstream-servers/              # Upstream Servers (Ports 3000 & 3001)
     ├── app1/                      # App One test page
     │   └── index.html
     ├── app2/                      # App Two test page
     │   └── index.html
     ├── myapps.conf                # Nginx configuration routing /app1/ and /app2/
-    └── README.md                  # Lab instructions for Module 10
+    ├── load-balancer.conf         # Bonus: Round-robin load balancer config
+    └── README.md                  # Lab instructions for upstream servers
 ```
 
 ---
@@ -57,7 +58,7 @@ curl http://localhost
 
 ---
 
-## Lab 1: Host a Static Website (Module 8)
+## Lab 1: Host a Static Website
 
 Inside [`static-website/`](static-website/):
 
@@ -88,7 +89,7 @@ curl http://mysite.local
 
 ---
 
-## Lab 2: Nginx with Python Flask (Module 9)
+## Lab 2: Nginx with Python Flask
 
 Inside [`flask-reverse-proxy/`](flask-reverse-proxy/):
 
@@ -136,7 +137,7 @@ curl http://flask.local
 
 ---
 
-## Lab 3: Upstream Servers on Ports 3000 & 3001 (Module 10)
+## Lab 3: Upstream Servers on Ports 3000 & 3001
 
 Inside [`upstream-servers/`](upstream-servers/):
 
@@ -168,8 +169,27 @@ sudo systemctl reload nginx
 # 5. Access both apps through Nginx on Port 80!
 curl http://localhost/app1/
 curl http://localhost/app2/
+```
 
-# 6. Stop background test apps when done
+### Bonus: Round-Robin Load Balancing
+Share traffic evenly across both ports:
+
+```bash
+# Copy and enable the load balancer config
+sudo cp load-balancer.conf /etc/nginx/sites-available/loadbalancer
+sudo ln -s /etc/nginx/sites-available/loadbalancer /etc/nginx/sites-enabled/
+
+# Test syntax and reload
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Test repeated requests (alternates between App 1 and App 2):
+for i in {1..4}; do curl http://localhost; done
+```
+
+When finished with the lab:
+```bash
+# Stop background test apps
 pkill -f http.server
 ```
 

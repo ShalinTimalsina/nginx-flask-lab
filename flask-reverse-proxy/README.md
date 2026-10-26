@@ -1,4 +1,4 @@
-# Module 9: Nginx with a Python Flask App
+# Nginx with a Python Flask App
 
 This lab shows you how to put Nginx in front of a Python Flask web application as a **reverse proxy**.
 
